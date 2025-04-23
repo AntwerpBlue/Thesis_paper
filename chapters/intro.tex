@@ -1,34 +1,47 @@
 % !TeX root = ../main.tex
 
-\chapter{简介}
+\chapter{引言}
 
-\section{一级节标题}
+\section{研究背景与意义}
 
-\subsection{二级节标题}
+\subsection{研究背景}
 
-\subsubsection{三级节标题}
+随着人工智能技术的快速发展和5G网络的全面普及，全球数字内容产业正在经历前所未有的变革。
+根据国家广电总局最新发布的《中国网络视听发展研究报告（2025）》显示，中国网络视听用户规模
+已达10.91亿，其中短视频用户规模突破10.40亿，日均使用时长高达156分钟，稳居各类互联网应用之首。
+这一庞大的用户基数和旺盛的内容创作需求，对视频编辑技术提出了更高要求，特别是在实时性、
+智能化和个性化方面。
 
-本模板 \pkg{ustcthesis} 是中国科学技术大学本科生和研究生学位论文的 \LaTeX{}
-模板， 按照《中国科学技术大学研究生学位论文撰写手册》（最近在修订中，以下简称《撰写手册》）和
-《\href{https://www.teach.ustc.edu.cn/?attachment_id=13867}
-{中国科学技术大学本科毕业论文（设计）格式}》的要求编写。
+当前，AI视频编辑技术已成为行业关注的焦点。以PortraitGen为代表的先进算法已能实现100FPS的高效渲染，
+支持文本、图像驱动的多模态编辑；Live2Diff采用单向的时间注意力机制，能够以近乎实时的速度将实时视频流
+转换为风格化内容；ChatAnyone等风格化肖像视频生成模型的发展也十分迅速。然而，这些前沿算法在实际应用
+中仍面临着诸多挑战，由于缺乏完善的用户交互
+设计，限制了其广泛推广和应用，提高了前沿技术的使用门槛；另外，因为没有直接面向用户，研究者往往无法了解
+用户的真实需求与体验反馈。
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur.
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-deserunt mollit anim id est laborum.
+\subsection{研究意义}
 
+本研究基于PortraitGen算法，构建了一套完整的智能视频编辑系统。我们设计了直观的用户界面与用户工作流，使
+用户无需关心算法细节，即可轻松实现视频在文字、图像等多模态输入下的风格化处理、虚拟合成、背景光重构等功能。
+同时，我们搭建了管理员系统，使研究者可以通过用户反馈和操作日志，了解用户的使用情况，从而根据用户的真实需求
+优化算法，调整研究方向。
 
+本文的主要贡献包括：
+\begin{itemize}
+    \item 提出面向生产环境的PortraitGen工程化方案，实现算法到产品的完整转化
+    \item 设计了可扩展的用户工作流，可以搭载多种算法，实现各种算法的切换
+    \item 通过实际应用验证，为行业提供可复制的技术方案
+\end{itemize}
 
-\section{脚注}
+\section{论文结构}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua.
-\footnote{Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-  nisi ut aliquip ex ea commodo consequat.
-  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-  eu fugiat nulla pariatur.}
+本文的组织结构如下：
+\begin{itemize}
+    \item \textbf{相关工作}：详细讨论PortraitGen技术原理、现有视频编辑App的现状以及技术栈选择；
+    \item \textbf{系统设计}：介绍系统的整体架构、前端设计、后端设计、数据库设计及安全性设计；
+    \item \textbf{功能实现}：详细描述用户管理、视频编辑功能及管理员功能的实现细节；
+    \item \textbf{性能评估}：通过功能测试、性能测试及用户体验评估，验证系统的有效性和稳定性；
+    \item \textbf{改进与展望}：提出系统改进方向和未来工作展望；
+    \item \textbf{结论}：总结本文的研究成果，强调本文的贡献及未来展望。
+\end{itemize}
+
