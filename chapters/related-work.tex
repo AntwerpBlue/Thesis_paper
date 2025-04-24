@@ -14,6 +14,12 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
 在PortraitGen中，我们将视频编辑任务从2D提升至3D，并采用3D高斯溅射来表示场景。具体而言，
 我们用数百万个3D高斯椭球来表示场景，对于每个以$\symbf{x}_0$为球心的高斯分布，我们有
 \begin{equation}
-    g(\symbf{x})=\exp{(\symbf{x}-\symbf{x}_0)^T\symbf{\Sigma}(\symbf{x}-\symbf{x}_0)}
+    g(\symbf{x})=\exp{-\frac{1}{2}(\symbf{x}-\symbf{x}_0)^T\symbf{\Sigma}(\symbf{x}-\symbf{x}_0)}
 \end{equation}
-其中$\symbf{\Sigma}$为协方差矩阵，通过旋转和缩放控制椭球的形状。
+其中$\symbf{\Sigma}$为协方差矩阵，通过旋转和缩放控制椭球的形状，有分解
+\begin{equation}
+    \symbf{\Sigma}=\symbf{R}\symbf{\Lambda}\symbf{\Lambda}^T\symbf{R}^T
+\end{equation}
+其中$\symbf{R}$为旋转矩阵，$\symbf{\Lambda}$为缩放矩阵。为了将三维的场景映射到二维平面，
+我们还需要定义每个高斯椭球的不透明度$\alpha$和球谐函数，以控制颜色和光照信息。
+
