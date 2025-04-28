@@ -14,7 +14,7 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
 在PortraitGen中，我们将视频编辑任务从2D提升至3D，并采用3D高斯溅射来表示场景。具体而言，
 我们用数百万个3D高斯椭球来表示场景，对于每个以$\symbf{x}_0$为球心的高斯分布，我们有
 \begin{equation}
-    g(\symbf{x})=\exp{(\symbf{x}-\symbf{x}_0)^T\symbf{\Sigma}(\symbf{x}-\symbf{x}_0)}
+    g(\symbf{x})=\exp{-\frac{1}{2}(\symbf{x}-\symbf{x}_0)^T\symbf{\Sigma}(\symbf{x}-\symbf{x}_0)}
 \end{equation}
 其中$\symbf{\Sigma}$为协方差矩阵，通过旋转和缩放控制椭球的形状，有分解
 \begin{equation}
