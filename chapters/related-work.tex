@@ -16,4 +16,21 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
 \begin{equation}
     g(\symbf{x})=\exp{(\symbf{x}-\symbf{x}_0)^T\symbf{\Sigma}(\symbf{x}-\symbf{x}_0)}
 \end{equation}
-其中$\symbf{\Sigma}$为协方差矩阵，通过旋转和缩放控制椭球的形状。
+其中$\symbf{\Sigma}$为协方差矩阵，通过旋转和缩放控制椭球的形状，有分解
+\begin{equation}
+    \symbf{\Sigma}=\symbf{R}\symbf{\Lambda}\symbf{\Lambda}^T\symbf{R}^T
+\end{equation}
+其中$\symbf{R}$为旋转矩阵，$\symbf{\Lambda}$为缩放矩阵。为了将三维的场景映射到二维平面，
+我们还需要定义每个高斯椭球的不透明度$\alpha$和球谐函数，以控制光照和颜色信息。
+
+3D高斯场采用了可微分的溅射渲染，通过将3D高斯投影到2D屏幕空间，我们可以计算每个像素的颜色
+\begin{equation}
+    C(\symbf{p})=\sum_{i\in N}c_i\alpha_i\prod_{j=1}^{i-1}(1-\alpha_j)
+\end{equation}
+其中$c_i$为第$i$个高斯的颜色，基于视角可以由球谐函数决定。为了优化由稀疏点云重建的3D高斯场，
+我们将给定视角下的渲染结果与真实结果进行比对，定义损失函数为
+\begin{equation}
+    \mathcal{L}=(1-\lambda)\mathcal{L}_1+\lambda\mathcal{L}_\text{D\_SSIM}
+\end{equation}
+其中$\mathcal{L}_1$为渲染的像素差异，描述了渲染结果与真是结果的光度差异；$\mathcal{L}_\text{D\_SSIM}$
+为
