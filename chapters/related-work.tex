@@ -34,7 +34,9 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
     \label{cov-decom}
 \end{equation}
 其中$\symbf{R}$为旋转矩阵，$\symbf{\Lambda}$为缩放矩阵。为了将三维的场景映射到二维平面，
-我们还需要定义每个3D高斯的不透明度$\alpha$和球谐函数，以控制光照和颜色信息。
+我们还需要定义每个3D高斯的不透明度$\alpha$和球谐函数系数$\symbf{h}$，以控制光照和颜色信息。因此，我们可以将
+一个3D高斯表示为$\{\symbf{x}_0,\symbf{q},\symbf{s},\alpha,\symbf{h} \}$，其中$\symbf{q}$与$\symbf{s}$为
+旋转变换对应的四元数和缩放变换对应的向量。
 
 \subsubsection{参数优化}
 3D高斯场采用了可微分的溅射渲染，通过将3D高斯投影到2D屏幕空间，我们可以计算每个像素的颜色
@@ -115,3 +117,54 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
 
 考虑到编辑算法的特性、部署环境的软硬件支持以及提供服务的具体场景，我们在系统开发过程中采用了以下工具作为技术栈。
 
+\subsection{Next.js}
+
+Next.js是一个基于React的现代前端开发框架，它支持同时存在构建时预渲染页面（SSG）和请求时渲染页面（SSR）的混合模式，
+并且支持增量静态生成，从而可以实现用户访问页面时即时加载构建时生成的静态HTML文件，大大提升用户体验。在开发过程中，
+它支持TypeScript，开发者可以获取静态类型检查，增强代码的健壮性；此外，它具备快速刷新的功能，给予开发者快速、
+可靠的实时编辑体验，并已经在Facebook级别的应用上规模上得到验证。
+
+Next.js开发中，我们还使用了React 16.8中引入的Hook函数，可以在不编写类的情况下在函数组件中使用状态和其他React特性。
+具体来说，在 React 16.8 之前，函数组件被称为"无状态组件"，因为它们无法管理自身的状态或使用生命周期方法。
+Hook 的出现彻底改变了这一局面，使函数组件能够拥有类组件的所有能力（见表~\ref{tab:hooks}）。
+例如我们使用useState来管理函数中的状态，它返回一个状态变量和更新该状态的函数，
+状态更新将触发组件的重新渲染；我们使用useEffect来实现多个生命周期方法的功能，当依赖数组发生变化时执行副作用函数，
+并通过返回函数来清理副作用。Hook特性可以提取组件逻辑并在多个组件间共享，同时解决了高阶组件与渲染属性带来的多层嵌套问题。
+
+\begin{table}
+    \centering
+    \bicaption{Hook与类组件的对比}{Comparison of Hooks and Class Components}
+    \label{tab:hooks}
+    \begin{tabular}{cll}
+        \toprule
+        特性   & 类组件  &Hook                                  \\
+        \midrule
+        状态管理 & this.state / setState & useState/useReducer \\
+        生命周期 & 多个独立方法 & useEffect统一处理   \\
+        代码组织 & 分散为多个方法 & 相关逻辑集中  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Flask}
+
+Flask 是一个轻量级的 Python Web 框架，被称为"微框架"（microframework），因为它核心简单但可通过扩展添加功能。
+基于以下的开发需求，我们选择Flask作为后端框架：
+\begin{enumerate}
+    \item \textbf{轻量级}：作为轻量级Web框架，Flask不强制使用任何特定库，可以根据需求灵活扩展；
+    \item \textbf{RESTful API}：Flask采用Werkzeug路由引擎，支持动态URL规则，方便定义API节点，适合开发RESTful API；
+    \item \textbf{异步任务处理支持}：Flask支持Redis作为任务队列，方便处理异步任务；
+    \item \textbf{算法适配}：使用python开发使其与各种AI算法适配，方便调用处理算法与后续算法扩展。
+\end{enumerate}
+
+\subsection{数据管理技术}
+
+本系统采用MySQL作为数据库，主要基于以下考量：
+\begin{enumerate}
+    \item \textbf{事务支持}：MySQL保证事务的原子性、一致性、隔离性和持久性，适合处理复杂的数据操作；
+    \item \textbf{SQL查询性能}：MySQL的SQL查询性能优秀，足以满足系统的数据库操作要求；
+    \item \textbf{关系型数据库}：MySQL是一种关系型数据库，适合存储结构化数据，如用户信息、视频信息、请求信息等。
+\end{enumerate}
+
+另外我们使用Redis管理任务队列，作为高性能的键值对存储数据库，适合存储任务信息，如任务ID、任务状态、任务进度等，并且
+由于其支持发布/订阅模式，方便实现任务队列的异步处理。
