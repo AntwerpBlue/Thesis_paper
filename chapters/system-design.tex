@@ -62,7 +62,7 @@ API接口鉴权等。另外由于系统部署在学校内网无法直接通过�
 
 \subsection{架构设计}
 
-根据第一节所述的需求分析，我们采用分层微服务架构，结合事件驱动的设计模式，将系统划分为客户端层、服务层、数据层，如~\ref{fig:system_structure}所示。
+根据第一节所述的需求分析，我们采用分层微服务架构，结合事件驱动的设计模式，将系统划分为客户端层、服务层、数据层，如~\ref{fig:system-structure}所示。
 
 客户端层通过组件管理、页面渲染提供响应式用户界面，并通过对服务层微服务的api调用处理用户交互事件；
 
@@ -75,7 +75,7 @@ API接口鉴权等。另外由于系统部署在学校内网无法直接通过�
     \centering
     \includegraphics[width=0.6\textwidth]{source/img/system_structure.png}
     \bicaption{系统架构图}{System Architecture Diagram}
-    \label{fig:system_structure}
+    \label{fig:system-structure}
 \end{figure}
 
 \subsection{4+1概要视图}
@@ -87,20 +87,82 @@ API接口鉴权等。另外由于系统部署在学校内网无法直接通过�
 
 \subsubsection{逻辑视图}
 
+我们用用户用例图与逻辑流程来表示系统的逻辑设计，考虑到叙述方便，我们将在下一章具体实现系统时详细介绍这部分内容。
+
 \subsubsection{开发视图}
+
+考虑到我们使用的技术栈，Next.js直接通过文件结构定义api，因此我们的文件结构相对简单，只需要根据系统的具体路由来建立。
+我们的大部分前端逻辑集中在pages下，components中存放了可复用的组件，包括自定义弹窗、自定义Hook等。在public中存放页面
+使用到的静态资源，包括图片、图标等。前端使用的配置文件conf存放在attribute下，同时也包括css的样式文件。
+
+后端被分为Flask API和Editor两个部分，考虑到我们的分层微服务架构，我们将Flask server分为Routes、Services、Utils三个部分。
+Routes部分作为前端请求的入口，定义了后端路由并调用微服务；Services部分作为业务逻辑处理部分，具体实现了相应的微服务；Utils部分作为辅助工具，提供一些通用功能。
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{source/img/system_develop.png}
+    \bicaption{系统开发视图}{Development View}
+    \label{fig:system-develop}
+\end{figure}
 
 \subsubsection{进程视图}
 
+系统的进程视图从动态事件的角度描述系统的行为，包括系统对用户行为的相应、前端服务器对后端服务的调用、API调用等。我们
+设计了如~\ref{fig:system-process}的进程视图。
+
+在我们的设计中，进程之间相互独立，互不影响。
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{source/img/system_process.png}
+    \bicaption{系统进程视图}{Process View}
+    \label{fig:system-process}
+\end{figure}
+
 \subsubsection{物理视图}
+
+物理视图是从系统物理层面上部署架构的视角来整体描述系统结构的视图，我们设计的物理视图如~\ref{fig:system-deploy}所示。
+
+预先渲染好的静态资源被部署在内容分发网络上（CDN）以加快用户的首屏加载，同时CDN通过负载均衡等技术使内容传输更快速、更稳定。
+用户在浏览器通过HTTP协议向服务器发送请求，经过网关的网络地址转换发送到前端Next.js驻守的端口。前端服务器接收到网关分发
+的请求后做出对应相应，并向后端Flask API驻守的端口跨域发送请求。Flask API调用相应的微服务并利用数据库操作完成响应，
+同时后端初始时实例化Edit Work以接收Redis管理的任务队列，完成任务处理。
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{source/img/system_deploy.png}
+    \bicaption{系统物理视图}{Physical View}
+    \label{fig:system-deploy}
+\end{figure}
 
 \subsection{数据库设计}
 
-根据需求分析，我们设计了用户表、任务表和编辑结果表，如~\ref{fig:database_design}所示。考虑到文件管理的需要，
-我们在文件相关的表中添加了过期时间字段，以方便后续的文件清理工作。
+数据库作为后端存储的核心负责存储系统中的各种信息。我们将系统中的实体抽象为用户、请求任务、视频与图片文件，
+使用数据实体关系（Entity Relationship, ER）图来描述这些实体及实体间的联系，我们设计的ER图如~\ref{fig:database-ER}所示。
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{source/img/database_ER.png}
+    \bicaption{数据库ER图}{Database ER Diagram}
+    \label{fig:database-ER}
+\end{figure}
+
+在实体关系图的基础上，我们进一步设计数据库的物理模型，如~\ref{fig:database-design}所示。本系统的数据库设计为用户表、任务表、视频表与图片表。
+
+用户表除了存储~\ref{fig:database-ER}中列出的属性外，添加了用户id作为用户的唯一标识，设置为用户记录的主键。根据我们的
+注册流程，用户表中的用户名、密码、邮箱、用户id均设置了非空约束，以保证用户信息的完整性。
+
+任务表的设计在ER图中所示的属性基础上，直接添加了使用的文件信息与上传者信息，而不是全部采用外键关联的方式。我们采用这种设计出于两方面考虑：
+一方面，为了防止后台文件积压，我们对已使用的文件也设置了过期时间，如果采用外键约束，文件过期后对应记录删除，任务表记录将不完整，这与我们期望获得完整任务信息
+的需求不符；另一方面将任务所需全部信息都集中存储在一个表中，可以减少实际运行过程中的数据库查询次数，用空间换取了时间。与用户表的处理相同，
+我们添加了任务id表项作为任务记录的唯一标识，并设置为主键。
+
+在将任务所需信息全部集成在任务表中后，视频与图片两个文件表的功能就变得单一，仅作为文件过期删除功能的辅助表，存储文件的过期信息。但为了
+保持数据库记录的一致性，我们仍然设置了外键引用，在两个表中分别引用了对应的任务id。
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{source/img/database_design.png}
-    \bicaption{数据库ER图}{Database ER Diagram}
-    \label{fig:database_design}
+    \bicaption{数据库物理模型}{Database Physical Model}
+    \label{fig:database-design}
 \end{figure}
