@@ -1,1 +1,46 @@
 \chapter{测试评估}
+
+在完成系统实现后，我们对系统进行功能与非功能性测试，以验证其是否符合预期，并评估其性能。
+本章将详细介绍测试方法、测试结果以及性能评估。
+
+\section{测试环境}
+
+为了确保测试结果的准确性与可靠性，我们采用与实际部署环境相似的硬件和软件配置进行测试，~\ref{tab:hardware-env}与
+~\ref{tab:software-env}分别展示了测试环境的硬件和软件配置。
+
+\begin{table}
+    \centering
+    \bicaption{硬件环境}{Hardware Environment}
+    \label{tab:hardware-env}
+    \resizebox{0.5\linewidth}{!}{
+    \begin{tabular}{cl}
+        \toprule
+        类型   &  配置信息       \\
+        \midrule
+        CPU & 2x Intel Xeon Gold（2.90GHz，64核/128线程） \\
+        GPU & 8x NVIDIA RTX 4090（24GB显存/卡）\\
+        存储架构 & NUMA（2节点）\\
+        驱动版本 & CUDA 12.2\\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\begin{table}
+    \centering
+    \bicaption{软件环境}{Software Environment}
+    \label{tab:software-env}
+    \resizebox{0.5\linewidth}{!}{
+    \begin{tabular}{cl}
+        \toprule
+        类型   &  配置信息       \\
+        \midrule
+        Next.js & 15.1.2 \\
+        node.js & 22.14.0 \\
+        Python & 3.9.21 \\
+        flask & 3.1.0 \\
+        客户端 & Google Chrome 135.0.7049.115 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
