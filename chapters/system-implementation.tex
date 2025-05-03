@@ -1,38 +1,92 @@
 \chapter{系统实现}
 
-\section{详细设计}
+本章基于上一章的需求分析及概要设计，介绍系统各个模块的详细设计及具体实现。我们通过
+用例图、流程图、类图等方式来展示系统模块的功能及交互关系。
 
-\subsection{用例设计}
+\section{模块化设计}
 
-一般用户在登录后可以上传视频并进行编辑、查询与管理编辑结果，并且可以查看开发者的相关信息。用户用例图如~\ref{fig:user_uml}所示。
+一般用户在登录后可以上传视频并进行编辑、查询与管理编辑结果，并且可以查看开发者的相关信息。用户用例图如~\ref{fig:user-uml}所示。
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.3\textwidth]{source/img/user_uml.png}
     \bicaption{用户用例图}{User Use Case Diagram}
-    \label{fig:user_uml}
+    \label{fig:user-uml}
 \end{figure}
-管理员用户除了一般用户所拥有的功能之外，还添加了数据统计与任务请求导出功能，以方便实验室研究者了解用户真实需求。管理员用户用例图如\ref{fig:admin_uml}所示。
+管理员用户除了一般用户所拥有的功能之外，还添加了数据统计与任务请求导出功能，以方便实验室研究者了解用户真实需求。管理员用户用例图如\ref{fig:admin-uml}所示。
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\textwidth]{source/img/admin_uml.png}
     \bicaption{管理员用例图}{Admin Use Case Diagram}
-    \label{fig:admin_uml}
+    \label{fig:admin-uml}
 \end{figure}
 
-\subsection{流程设计}
+从用例图~\ref{fig:user-uml}和~\ref{fig:admin-uml}分析得出，系统的模块可以划分为：
+\begin{itemize}
+    \item 首页：作为各个功能模块的入口，完成其他各模块的合理布局；
+    \item 用户管理模块：包括用户的注册、登录、注销、密码重置与找回功能；
+    \item 任务上传模块：系统的核心功能，完整实现编辑任务上传的全流程；
+    \item 结果管理模块：用户在该模块下查询编辑任务的结果，并提供删除、重命名等操作；
+    \item 关于我们模块：展示开发者的相关信息；
+    \item 数据统计模块：管理员用户在该模块下可以查看用户上传任务的数量、编辑任务的数量、编辑任务的结果数量等数据统计，并导出用户请求数据；
+\end{itemize}
 
-系统涉及到的工作流程主要包括登陆管理、任务上传与结果管理。
+\section{模块实现}
 
-\subsubsection{登录管理}
+本节将介绍系统各个模块的具体实现，包括前端页面、后端接口、数据库设计等。由于首页只作为其余功能模块的载体，
+只涉及到前端页面的布局设计，不涉及到与后端的交互；而关于我们模块作为信息展示，仅仅为静态HTML页面，我们也不再详细介绍。
+另外，由于各个模块的后端操作都涉及到数据库操作，我们将数据库功能实现单独列出，不再在每个模块中介绍。
 
-由于用户的编辑结果通过邮箱来发送，我们可以将邮箱作为用户的唯一标识，在用户注册时将邮箱作为用户名，密码作为用户密码，通过邮箱和密码进行登录。
-用户忘记密码时也可以通过邮箱进行密码重置。登录流程如\ref{fig:login_process}所示。
+\subsection{首页的详细设计与实现}
+
+在前端UI设计中，我们采用Ant Design（Antd）来辅助开发。Antd是一个基于React的UI组件库，提供高质量的React组件，并拥有完整的类型定义文件。
+
+首页的布局采用Antd的Layout组件，使用侧边布局，在左侧放置导航栏以显示各个功能模块，如~\ref{fig:app-dashboard}所示。功能模块间的切换功能通过维护一个全局的
+组件状态selectedMenu来实现，导航栏的每一项对应selectedMenu的一个值，检测到用户点击动作时，更新状态为对应的值。
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{source/img/app_dashboard.png}
+    \bicaption{首页布局}{Home Page Layout}
+    \label{fig:app-dashboard}
+\end{figure}
+
+为了显示对应模块的内容，我们在Layout组件的Content区域设置条件渲染，根据组件状态selectedMenu的值来渲染不同的组件。
+例如selectedMenu的默认值是1，对应任务上传模块，首页默认渲染任务上传组件。此外首页根据用户是否为管理员对导航栏也
+进行条件渲染，只有管理员用户才能显示额外的数据统计模块。
+
+\subsection{用户管理的详细设计与实现}
+
+\subsubsection{流程设计}
+
+我们设计的用户登录流程如\ref{fig:login-process}所示，图中包含我们需要实现的三个子流程：用户注册、用户登录与密码找回。
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\textwidth]{source/img/login_process.png}
     \bicaption{登录流程图}{Login Process}
-    \label{fig:login_process}
+    \label{fig:login-process}
 \end{figure}
+
+\subsubsection{前端实现}
+
+我们分别为这三个子流程设计了路由页面，并在页面中设置了路由跳转，保证用户页面跳转的双向性。我们使用Antd的Form组件来实现
+表单的创建，我们通过设置组件成员的rules属性来设置表单内容检查，包括密码长度、密码复杂度、邮箱是否合法等；
+组件中封装的提交按钮通过绑定自定义触发函数以处理提交事件，触发函数的主要逻辑为将后端api需要的数据封装为json格式，
+通过axios发送post请求到后端，并处理返回结果。
+
+由于系统中结果查询、上传限制查询等功能都需要使用用户信息，我们又无法频繁地要求用户录入信息，因此在登录流程中，
+我们需要维护全局的用户状态以供其他模块使用。为了携带cookies信息到全局，我们选择了使用localStorage来存储用户信息，
+在用户登录成功后，我们存储全局的用户信息并设置过期时间，在用户登出时，我们清除全局的用户信息。当其他模块需要使用
+用户信息时，只需要从localStorage中解析出所需要的字段即可。
+
+密码找回功能由于涉及到敏感信息，存在安全风险，因此我们设计了两步找回方式。我们需要用户输入邮箱，验证邮箱验证码通过后
+自动跳转到密码重置页面，并由后端返回token，用户在重置密码时需要携带token，后端验证token后才能重置密码。这种设计可以防止
+用户直接进入重置密码路由对数据库进行攻击，相比于临时生成动态路由，避免了动态路由规则被暴力破解的风险。
+
+\subsubsection{后端实现}
+
+后端主要实现的功能包括验证邮件发送、token生成与验证。
+
+\subsection{任务管理的详细设计与实现}
 
 \subsubsection{任务上传}
 
@@ -44,9 +98,23 @@
     \label{fig:upload_process}
 \end{figure}
 
+\subsection{结果管理的详细设计与实现}
+
 \subsubsection{结果管理}
 
 用户在结果查询界面可以查看自己上传的任务进度与结果，系统也支持任务重命名与删除，同时在任务处理完成后会自动生成略缩图，方便用户预览结果。
+
+\subsection{数据统计的详细设计与实现}
+
+
+\subsection{数据库功能实现}
+
+我们使用PyMySQL作为Flask框架下的MySQL数据库驱动，受到SQLAlchemy等ORM驱动框架将数据库操作封装为对象方法的启发，我们
+将常用的数据库操作封装为函数，以方便在Flask应用中调用。
+
+我们还在数据库中添加了连接池设计，以提高数据库连接的效率。由于MySQL数据库是通过TCP协议进行通信的，因此每次建立连接都需要进行三次握手，
+以实现TCP的可靠传输；而建立TCP连接后数据库还需要传输认证包用于用户验证，因此数据库连接的建立是一个相对耗时的操作。我们采用的连接池设计
+通过维护一定数量的数据库连接，在需要时直接从连接池中获取数据库连接，避免了频繁建立数据库连接带来的性能问题。
 
 \subsection{安全控制设计}
 
