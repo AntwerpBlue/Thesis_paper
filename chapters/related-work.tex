@@ -2,18 +2,19 @@
 
 \section{传统视频编辑方法}
 
-早期的肖像视频编辑主要依赖于生成对抗网络（GAN），StyleGAN2在图像生成方面取得成功后，许多工作者
-开始将预训练的GAN模型应用于肖像编辑，例如3D-FM GAN引入StyleGAN以在保留人脸特征的同时实现3D人脸编辑；
-此外，也有工作将其应用于肖像的风格化，DualStyleGAN针对当时即便使用大量同类训练数据也只能实现单一风格化的问题，
+早期的肖像视频编辑主要依赖于生成对抗网络（GAN），StyleGAN2\cite{karras2020analyzing}在图像生成方面取得成功后，许多工作者
+开始将预训练的GAN模型应用于肖像编辑，例如3D-FM GAN\cite{liu20223d}引入StyleGAN以在保留人脸特征的同时实现3D人脸编辑；
+此外，也有工作将其应用于肖像的风格化，DualStyleGAN\cite{yang2022pastiche}针对当时即便使用大量同类训练数据也只能实现单一风格化的问题，
 引入StyleGAN实现了利用一张模板的风格化肖像生成。但是由于StyleGAN2的表示能力有限，这些工作难以稳定地
 在复杂场景下实现高质量的肖像生成。
 
-为了寻求更强的表示能力，研究者们尝试使用3D表示来进行肖像编辑。ClipFace引入了三维网格来表示人脸，用自监督的生成模型
-来实现人脸的编辑与动画。然而受限于三维网格的表示能力，这些工作存在身份失真与动作失真等问题。NeRF在三维重建方面
-取得巨大突破后，许多工作也引入NeRF进行肖像编辑，但这些工作仍然不能满足许多应用的需要。
+为了寻求更强的表示能力，研究者们尝试使用3D表示来进行肖像编辑。ClipFace\cite{aneja2023clipface}引入了三维网格来表示人脸，用自监督的生成模型
+来实现人脸的编辑与动画。然而受限于三维网格的表示能力，这些工作存在身份失真与动作失真等问题。NeRF\cite{mildenhall2021nerf}在三维重建方面
+取得巨大突破后，许多工作\cite{abdal20233davatargan}\cite{bao2024geneavatar}\cite{sun2023next3d}也引入NeRF进行肖像编辑，但这些工作仍然不能满足许多应用的需要。
 
-扩散模型被提出并获得巨大成功后，许多工作尝试利用扩散模型强大的生成能力。Arc2Face、Next3d等工作在2D肖像图片的生成与
-编辑方面取得了进展；在3D方面，扩散模型被应用于文字提示下的3D人脸生成，而Avatarstudio和Control4D则尝试将扩散模型应用于3D人脸编辑，
+扩散模型被提出并获得巨大成功后，许多工作尝试利用扩散模型强大的生成能力。Arc2Face\cite{papantoniou2024arc2face}等工作在2D肖像图片的生成与
+编辑方面取得了进展；在3D方面，扩散模型被应用于文字提示下的3D人脸生成\cite{han2023headsculpt}\cite{zhang2023dreamface}，
+而Avatarstudio\cite{mendiratta2023avatarstudio}和Control4D\cite{shao2024control4d}则尝试将扩散模型应用于3D人脸编辑，
 但它们都需要多角度的动态视频序列作为输入来建模3D人脸，这在现实中比较难以获取。
 
 \section{PortraitGen技术原理}
@@ -23,7 +24,7 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
 \subsection{3D高斯场表示}
 
 \subsubsection{3D高斯场景表示}
-在PortraitGen中，我们将视频编辑任务从2D提升至3D，并采用3D高斯溅射来表示场景。具体而言，
+在PortraitGen中，我们将视频编辑任务从2D提升至3D，并采用3D高斯溅射\cite{kerbl20233d}来表示场景。具体而言，
 我们用数百万个3D高斯椭球来表示场景，对于每个以$\symbf{x}_0$为球心的高斯分布，我们有
 \begin{equation}
     g(\symbf{x})=\exp{-\frac{1}{2}(\symbf{x}-\symbf{x}_0)^T\symbf{\Sigma}(\symbf{x}-\symbf{x}_0)}
@@ -87,7 +88,7 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
 在标准的3D高斯溅射中，每个3D高斯的颜色通过球谐函数的系数来表示，而这种表示存在一些问题：一方面，球谐系数仅能建模低频的光照变化，难以表现高频的细节，如笔触、艺术风格等；另一方面，
 强制使所有视角严格遵守物理光照，阻碍了3D高斯在会真实感渲染方面的应用，例如卡通风格的轮廓线等。PortraitGen用可学习的特征来代替每个3D高斯的球谐函数，实现了更强的表达能力。
 
-我们使用SMPL-X作为人体模型的表示方法，SMPL-X的定义为
+我们使用SMPL-X\cite{pavlakos2019expressive}作为人体模型的表示方法，SMPL-X的定义为
 \begin{align}
     M(\beta,\theta,\psi)&=W(T_p(\beta,\theta,\psi), J(\beta),\theta, \mathcal{W})\\
     T_p(\beta,\theta,\psi)&=\bar{T}+B_S(\beta;\mathcal{S})+B_E(\psi;\mathcal{E})+B_P(\theta;\mathcal{P})
@@ -103,7 +104,7 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
 \subsection{表情相似性引导与感知编辑}
 
 在PortraitGen的编辑过程中，需要迭代编辑视频数据集，而在反复编辑视频帧的过程中，每次编辑都可能引入微小表情偏差，多次迭代后偏差放大，
-导致面部表情和个性化特征会逐渐退化，如笑容僵硬、五官变形等。为了解决这一问题，我们采用3D表情识别模型EMOCA提取表情潜码
+导致面部表情和个性化特征会逐渐退化，如笑容僵硬、五官变形等。为了解决这一问题，我们采用3D表情识别模型EMOCA\cite{danvevcek2022emoca}提取表情潜码
 \begin{equation}
     z_{\text{exp}}=E_{\text{EMOCA}}(I) \in \mathbb{R} ^{50}
 \end{equation}
@@ -119,12 +120,12 @@ PortraitGen作为当前先进的肖像视频编辑技术，其核心创新点体
 
 \subsection{Next.js}
 
-Next.js是一个基于React的现代前端开发框架，它支持同时存在构建时预渲染页面（SSG）和请求时渲染页面（SSR）的混合模式，
+Next.js是一个基于React的现代前端开发框架\cite{lazuardy2022modern}，它支持同时存在构建时预渲染页面（SSG）和请求时渲染页面（SSR）的混合模式，
 并且支持增量静态生成，从而可以实现用户访问页面时即时加载构建时生成的静态HTML文件，大大提升用户体验。在开发过程中，
 它支持TypeScript，开发者可以获取静态类型检查，增强代码的健壮性；此外，它具备快速刷新的功能，给予开发者快速、
 可靠的实时编辑体验，并已经在Facebook级别的应用上规模上得到验证。
 
-Next.js开发中，我们还使用了React 16.8中引入的Hook函数，可以在不编写类的情况下在函数组件中使用状态和其他React特性。
+Next.js开发中，我们还使用了React 16.8中引入的Hook函数\cite{reacthooks2019}\cite{bugl2019learn}，可以在不编写类的情况下在函数组件中使用状态和其他React特性。
 具体来说，在 React 16.8 之前，函数组件被称为"无状态组件"，因为它们无法管理自身的状态或使用生命周期方法。
 Hook 的出现彻底改变了这一局面，使函数组件能够拥有类组件的所有能力（见表~\ref{tab:hooks}）。
 例如我们使用useState来管理函数中的状态，它返回一个状态变量和更新该状态的函数，
@@ -148,7 +149,7 @@ Hook 的出现彻底改变了这一局面，使函数组件能够拥有类组件
 
 \subsection{Flask}
 
-Flask 是一个轻量级的 Python Web 框架，被称为"微框架"（microframework），因为它核心简单但可通过扩展添加功能。
+Flask \cite{flask}是一个轻量级的 Python Web 框架，被称为"微框架"（microframework），因为它核心简单但可通过扩展添加功能。
 基于以下的开发需求，我们选择Flask作为后端框架：
 \begin{enumerate}
     \item \textbf{轻量级}：作为轻量级Web框架，Flask不强制使用任何特定库，可以根据需求灵活扩展；
@@ -166,5 +167,5 @@ Flask 是一个轻量级的 Python Web 框架，被称为"微框架"（microfram
     \item \textbf{关系型数据库}：MySQL是一种关系型数据库，适合存储结构化数据，如用户信息、视频信息、请求信息等。
 \end{enumerate}
 
-另外我们使用Redis管理任务队列，作为高性能的键值对存储数据库，适合存储任务信息，如任务ID、任务状态、任务进度等，并且
+另外我们使用Redis\cite{redis}管理任务队列，作为高性能的键值对存储数据库，适合存储任务信息，如任务ID、任务状态、任务进度等，并且
 由于其支持发布/订阅模式，方便实现任务队列的异步处理。
