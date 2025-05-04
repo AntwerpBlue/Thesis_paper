@@ -9,14 +9,14 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.3\textwidth]{source/img/user_uml.png}
-    \bicaption{用户用例图}{User Use Case Diagram}
+    \caption{用户用例图}
     \label{fig:user-uml}
 \end{figure}
 管理员用户除了一般用户所拥有的功能之外，还添加了数据统计与任务请求导出功能，以方便实验室研究者了解用户真实需求。管理员用户用例图如\ref{fig:admin-uml}所示。
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\textwidth]{source/img/admin_uml.png}
-    \bicaption{管理员用例图}{Admin Use Case Diagram}
+    \caption{管理员用例图}
     \label{fig:admin-uml}
 \end{figure}
 
@@ -44,7 +44,7 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{source/img/app_dashboard.png}
-    \bicaption{首页布局}{Home Page Layout}
+    \caption{首页布局}
     \label{fig:app-dashboard}
 \end{figure}
 
@@ -60,7 +60,7 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\textwidth]{source/img/login_process.png}
-    \bicaption{登录流程图}{Login Process}
+    \caption{登录流程图}
     \label{fig:login-process}
 \end{figure}
 
@@ -91,7 +91,7 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{source/img/SMTP_sequence.png}
-    \bicaption{邮件发送时序图}{SMTP Sequence Diagram}
+    \caption{邮件发送时序图}
     \label{fig:SMTP-sequence}
 \end{figure}
 
@@ -110,7 +110,7 @@ token的生成与验证部分我们使用了JSON Web Token（JWT）库，JWT是�
 这种加密方式通过刻意使密钥派生的速度变慢，增加暴力破解的难度；同时由于不同密钥对应的盐值不同，确保了即使相同的密码
 也会产生不同的哈希值，能够抵抗彩虹表攻击。
 
-\section{任务管理的详细设计与实现}
+\section{任务上传的详细设计与实现}
 
 \subsection{流程设计}
 
@@ -118,7 +118,7 @@ token的生成与验证部分我们使用了JSON Web Token（JWT）库，JWT是�
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.3\textwidth]{source/img/edit_process.png}
-    \bicaption{上传流程图}{Upload Process}
+    \caption{上传流程图}
     \label{fig:upload-process}
 \end{figure}
 
@@ -167,7 +167,7 @@ token的生成与验证部分我们使用了JSON Web Token（JWT）库，JWT是�
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{source/img/app_result.png}
-    \bicaption{结果管理页面}{Result Management Page}
+    \caption{结果管理页面}
     \label{fig:app-result}
 \end{figure}
 
@@ -184,7 +184,7 @@ token的生成与验证部分我们使用了JSON Web Token（JWT）库，JWT是�
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{source/img/app_admin.png}
-    \bicaption{数据统计页面}{Statistics Page}
+    \caption{数据统计页面}
     \label{fig:app-admin}
 \end{figure}
 
