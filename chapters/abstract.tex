@@ -1,8 +1,8 @@
 % !TeX root = ../main.tex
 
 \ustcsetup{
-  keywords  = {学位论文, 摘要, 关键词},
-  keywords* = {Dissertation, Abstract, Keywords},
+  keywords  = {肖像视频编辑，多模态编辑，系统设计},
+  keywords* = {Portrait Editing, Multi-modal Editing, System Design},
 }
 
 \begin{abstract}
@@ -10,12 +10,13 @@
   其中，肖像视频编辑作为视频处理领域的核心应用之一，在影视制作、社交媒体、虚拟现实等领域具有广泛需求。
   传统的生成式人工智能视频编辑方法主要依赖于2D图像处理技术，难以满足3D场景下的高质量、高效率编辑需求。
 
-  在这一背景下，PortraitGen系统代表了当前肖像视频编辑技术的前沿水平。该系统通过将2D肖像视频编辑问题
+  在这一背景下，PortraitGen算法代表了当前肖像视频编辑技术的前沿水平。该算法通过将2D肖像视频编辑问题
   提升至3D领域，利用动态3D高斯场确保空间和时间一致性，并创新性地引入神经高斯纹理机制，实现了高质量、
   高效率的多模态肖像视频编辑。
   
-  本文基于PortraitGen算法设计并实现了一个完整的视频编辑系统，采用前后端分离的系统架构，开发了完整的
-  用户工作流，并实现了管理员监控系统，以支持用户的行为分析和数据监控。
+  本文基于PortraitGen算法设计并实现了一个完整的视频编辑系统，采用前后端分离的系统架构（Next.js+Flask），
+  开发了用户任务上传、结果管理、数据统计等功能模块，通过Redis异步任务队列优化处理流程。测试表明，
+  系统在功能完整性和响应性能（LCP 0.8秒）上均达到实际应用标准，为生成式视频编辑技术的落地提供了可扩展的解决方案。
 
 \end{abstract}
 
@@ -28,14 +29,17 @@
   processing techniques, making it difficult to meet the requirements for high-quality and 
   high-efficiency editing in 3D scenarios.
 
-  Against this backdrop, the PortraitGen system represents the cutting edge of current portrait 
+  Against this backdrop, the PortraitGen algorithm represents the cutting edge of current portrait 
   video editing technology. By elevating the 2D portrait video editing problem into the 3D domain, 
-  the system employs a dynamic 3D Gaussian field to ensure spatial and temporal consistency while 
+  the algorithm employs a dynamic 3D Gaussian field to ensure spatial and temporal consistency while 
   innovatively introducing a Neural Gaussian Texture mechanism, thereby achieving high-quality, 
   efficient, and multimodal portrait video editing.
 
   This paper designs and implements a comprehensive video editing system based on the PortraitGen 
-  algorithm. Adopting a frontend-backend decoupled architecture, the system develops a complete 
-  user workflow and implements an administrator monitoring system to support user behavior 
-  analysis and data monitoring.
+  algorithm. Adopting a frontend-backend decoupled architecture (Next.js+Flask), the system develops 
+  modules including task uploading, result management, and statistics display. The system also 
+  optimized the processing using Redis async task queue. Experimental validation confirms that 
+  the system achieves production-ready performance in terms of functional integrity and 
+  responsiveness (LCP 0.8s), offering an extensible framework for deploying generative video 
+  editing techniques in real-world scenarios.
 \end{abstract*}
